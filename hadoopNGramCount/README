@@ -1,0 +1,28 @@
+Note: hadoop-core-1.1.1.jar required
+
+ScoreTitlePair.java
+This is a class for the intermediate output. It simply consists of the title (a
+String) and the score (an int). Two ScoreTitlePairs can be compared by first
+compare the score and then compare the title lexicographically.
+
+ChunkInputFormat.java
+This processes a wikipedia chunk file and produces the key-value pairs for the
+Map job. It extends FileInputFormat and overrides the isSplitable and getRecordReader
+methods so that the chunk file would not be splitted and each key and value
+produced are the page title and the corresponding page content of a wikipedia
+page, respectively. The implementation is modified from the TextInputFormat.java,
+KeyValueTextInputFormat.java, LineRecordReader.java, KeyValueLineRecordReader.java
+from the Hadoop 1.1.1 source code.
+
+Ngram.java
+This specifies the Map-Combine-Reduce jobs. The implementation is modified from the
+WordCount 2.0 example from the MapReduce tutorial.
+Map -- Each Mapper will first stores the N-grams of the query file. Then it takes
+the input key-value i.e. title-content pairs, loops through the content and
+counts the number N-grams that occur in the query. The keys of the outputs of Map
+jobs are all 1 and the values are ScoreTitlePairs. Since these intermediate keys
+are all the same, they will be processed by only one Reducer.
+Combine -- Locally sorts the output ScoreTitlePairs from the Mapper, and keep the
+top 20 of them, thereby reducing the jobs for the Reducer.
+Reduce -- It sorts all of the ScoreTitlePairs and takes the top 20 of them. The
+final output keys are their scores and values are the corresponding titles.
