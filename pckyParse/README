@@ -1,0 +1,14 @@
+tree.py: A Tree class is defined in this script, which is used in grammar training and parsing. This class allows easy 
+navigation within a tree by accessing the children and mother fields. It also contains methods that can generate rules 
+that license the tree, that output the tree in bracketed format, and that parse the bracketed string into a Tree object.
+
+train_grammar.py: Trains a probabilistic CFG on a treebank. It reads in all trees in the treebank, generates all rules 
+that licencing them, and estimates the probability of each rule from the relative counts.
+
+pcky.py: Reads in a probabilistic CFG in Chomsky Normal Form and a set of sentences and then yields the parse for each 
+sentence with the highest probability.
+
+
+Usage:
+python2.7 train_grammar.py treebank_small.binarized trained.pcfg
+python2.7 pcky.py trained.pcfg sents.test > parses.test
